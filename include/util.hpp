@@ -12,6 +12,8 @@ struct Coordinate
     /// Default constructor
     Coordinate () : row{-1}, col{-1} { }
 
+    Coordinate (int r, int c) : row{r}, col{c} { }
+
     /// Equality comparison operator
     bool operator== (const Coordinate& other) {
         return row == other.row && col == other.col;

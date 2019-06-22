@@ -5,26 +5,18 @@
 #include "./util.hpp"
 
 class Snake {
-    private:
-    std::deque<Coordinate> body;    //!< Storage of all body pieces from head to tail
-
+    
     public:
-    Direction facing;               //!< Direction that the snake is looking to
+    std::deque<Coordinate> body;        //!< Storage of all body pieces from head to tail
+    Direction facing = Direction::Up;   //!< Direction that the snake is looking to
+    bool alive;                         //!< Is the snake alive?
 
     /// Default constructor
-    Snake () { }
+    Snake () : alive{false} { }
 
     /// Initialization constructor 
-    Snake (Coordinate head) {
+    Snake (Coordinate head) : alive{true} {
         body.push_front(head);
-    }
-
-    /// Checks if any piece of the snake is at given position
-    bool is_at (Coordinate pos);
-
-    /// Checks if the snake's head is at this position
-    bool is_head (Coordinate pos) {
-        return body[0] == pos;
     }
 
     /// Moves the snake to the given direction

@@ -71,7 +71,7 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
 }
 
 bool SnazeGame::game_over () {
-    return false;
+    return levels.size() == 0;
 }
 
 void SnazeGame::render () {
@@ -95,7 +95,11 @@ void SnazeGame::render () {
     cout << levels[0] << endl;
     cout << "-------------------------------------------------------" << endl;
 }
-
 void SnazeGame::update () {
-    
+    // Current levels is always at index 0
+    Level& cur = levels[0];
+
+    // The following functions only have effect if it's needed
+    cur.spawn_snake();
+    cur.spawn_fruit();
 }
