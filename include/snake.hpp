@@ -21,6 +21,23 @@ class Snake {
 
     /// Moves the snake to the given direction
     void move (Direction dir);
+
+    /// Checks if any body piece is located at given coordinate
+    bool is_at (Coordinate pos);
+
+    // Two snakes are equal if all body parts are in the same positions
+    bool operator== (const Snake& other) {
+        if (body.size() == other.body.size()) {
+            for (size_t i = 0; i < body.size(); i++) {
+                if (body[i] != other.body[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 };
 
 #endif

@@ -18,6 +18,11 @@ struct Coordinate
     bool operator== (const Coordinate& other) {
         return row == other.row && col == other.col;
     }
+
+    /// Inequality comparison operator
+    bool operator!= (const Coordinate& other) {
+        return row != other.row || col != other.col;
+    }
 };
 
 enum Direction {

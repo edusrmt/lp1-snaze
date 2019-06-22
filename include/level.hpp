@@ -19,6 +19,8 @@ class Level {
     Coordinate spawn;                       //!< Spawn point of the snake
     Coordinate fruit;                       //!< Location of the fruit   
 
+    friend class SnazeGame;                 //!< SnazeGame hass access to this class
+
     public:
     Snake snake;                            //!< Snake of the level
 
@@ -43,26 +45,6 @@ class Level {
             spawn = Coordinate(row, col);
 
         grid[row][col] = value;
-    }
-
-    /// Spawns a snake at spawn point if it's dead
-    void spawn_snake () {
-        if (!snake.alive)
-            snake = Snake(spawn);
-    }
-
-    /// Spawns fruit at random position if there isn't one
-    void spawn_fruit () {
-        if(fruit.row == -1 || fruit.col == -1) {
-            int f_row = rand() % r, f_col = rand() % c;
-
-            while(grid[f_row][f_col] != ' ') {
-                f_row = rand() % r;
-                f_col = rand() % c;
-            }
-
-            fruit = Coordinate(f_row, f_col);
-        }
     }
 };
 
@@ -114,9 +96,9 @@ inline std::ostream& operator<< (std::ostream &out, const Level& lvl) {
         for (int j = 0; j < lvl.c; j++) {
             switch (display[i][j])
             {
-            case '#':
-            out << "\u2588";
-            break;
+            //case '#':
+            //out << "\u2588";
+            //break;
 
             case '0':
             out << "\u2662";

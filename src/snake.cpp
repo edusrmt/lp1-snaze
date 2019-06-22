@@ -1,5 +1,14 @@
 #include "../include/snake.hpp"
 
+bool Snake::is_at (Coordinate pos) {
+    for (Coordinate cood : body) {
+        if (pos == cood)
+            return true;
+    }
+
+    return false;
+}
+
 void Snake::move (Direction dir) {
     facing = dir;
     body.pop_back();

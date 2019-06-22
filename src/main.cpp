@@ -8,10 +8,9 @@ int main (int argc, char* argv[]) {
     if(!game.initialize_game(argc, argv))
         return 1;
 
-    while (not game.game_over()) {        
+    for (int i = 0; i < 2; i++) {        
         game.update();
         game.render();
-        break;
     }
 
     return 0;

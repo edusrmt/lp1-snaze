@@ -66,7 +66,7 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
     cout << ">>> Press <ENTER> to start the game!" << endl;
     render();
 
-    input.close();    
+    input.close();
     return true;
 }
 
@@ -95,11 +95,38 @@ void SnazeGame::render () {
     cout << levels[0] << endl;
     cout << "-------------------------------------------------------" << endl;
 }
+
 void SnazeGame::update () {
     // Current levels is always at index 0
-    Level& cur = levels[0];
+    Level& cur = levels[0];    
 
-    // The following functions only have effect if it's needed
-    cur.spawn_snake();
-    cur.spawn_fruit();
+    if(cur.fruit.row == -1 || cur.fruit.col == -1)
+        spawn_fruit();
+
+    if (!cur.snake.alive)
+        spawn_snake();
+    else {
+        cur.snake.move(ai->next_move());
+    }
+}
+
+void SnazeGame::spawn_snake () {
+    Snake newSnake(levels[0].spawn);
+    levels[0].snake = newSnake;
+    ai = new Player(levels[0].grid, levels[0].snake, levels[0].fruit);
+}
+
+void SnazeGame::spawn_fruit () {    
+    int f_row = rand() % levels[0].r, f_col = rand() % levels[0].c;
+
+    while(levels[0].grid[f_row][f_col] != ' ' && !levels[0].snake.is_at(Coordinate(f_row, f_col))) {
+        f_row = rand() % levels[0].r;
+        f_col = rand() % levels[0].c;
+    }
+
+    levels[0].fruit = Coordinate(f_row, f_col);    
+}
+
+bool SnazeGame::level_complete () {
+    return false;
 }

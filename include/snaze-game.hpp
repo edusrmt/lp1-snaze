@@ -8,6 +8,7 @@
 
 #include "../include/level.hpp"
 #include "../include/snake.hpp"
+#include "../include/player.hpp"
 
 class SnazeGame {
     private:
@@ -15,6 +16,7 @@ class SnazeGame {
     int lives = 5;                  //!< Amount of lives the snake has
     int score = 0;                  //!< Current score of the game
     int food = 0;                   //!< Amount of food eaten in the current level
+    Player* ai;
 
     public:
     /// Default constructor
@@ -31,6 +33,15 @@ class SnazeGame {
 
     /// Runs all game logic
     void update ();
+
+    /// Spawns a snake at spawn point, reference it's AI
+    void spawn_snake ();
+
+    /// Spawns fruit at random position
+    void spawn_fruit ();
+
+    /// Checks if current level has been completed
+    bool level_complete();
 };
 
 #endif
