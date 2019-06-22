@@ -50,18 +50,52 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
             getline(input, line);
             int j = 0;
 
-            for (char val : line)
+            for (char val : line) {                
                 level.set_char(val, i, j++);
+            }
         }
 
         // Stores level into the vector
         levels.push_back(level);
     }
 
+    // Prints start message
     cout << " Levels loaded: " << levels.size() << " | Snake lives: 5 | Apples to eat: 10" << endl;
     cout << "     Clear all levels to win the game. Good luck!" << endl;
     cout << "-------------------------------------------------------" << endl;
     cout << ">>> Press <ENTER> to start the game!" << endl;
-    
+    render();
+
+    input.close();    
     return true;
+}
+
+bool SnazeGame::game_over () {
+    return false;
+}
+
+void SnazeGame::render () {
+    // Prints header
+    string msg;
+    cout << msg << endl;
+    cout << "Lives: ";
+
+    // Prints lives display
+    for (int i = 0; i < 5; i++) {
+        if (i < lives)
+            cout << "\u2665";
+        else
+            cout << ".";
+    }
+
+    cout << " | Score: " << score << " | Food eaten: " << food << " of 10" << endl;
+    cout << "-------------------------------------------------------" << endl;
+
+    // Prints level
+    cout << levels[0] << endl;
+    cout << "-------------------------------------------------------" << endl;
+}
+
+void SnazeGame::update () {
+    
 }

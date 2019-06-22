@@ -8,5 +8,11 @@ int main (int argc, char* argv[]) {
     if(!game.initialize_game(argc, argv))
         return 1;
 
+    while (not game.game_over()) {
+        //game.render();
+        //game.update();
+        break;
+    }
+
     return 0;
 }
