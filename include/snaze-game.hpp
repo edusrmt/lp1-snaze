@@ -24,6 +24,11 @@ class SnazeGame {
     /// Default constructor
     SnazeGame () { }
 
+    /// Destructor
+    ~SnazeGame () {
+        delete ai;
+    }
+
     /// Initializes a game instance
     bool initialize_game (int argc, char* argv[]);
 
@@ -44,6 +49,9 @@ class SnazeGame {
 
     /// Spawns fruit at random position
     void spawn_fruit ();
+
+    /// Checks if current round has been completed
+    bool round_complete();
 
     /// Checks if current level has been completed
     bool level_complete();

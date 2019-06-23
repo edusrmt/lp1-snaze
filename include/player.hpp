@@ -19,7 +19,9 @@ class Player {
     std::stack<Direction> path;             //!< Path to the fruit
 
     /// Returns a vector with all possible one step moves as Snapshots
-    std::stack<Snake> check_neighbors (Snake snk, std::vector<Snake> v = std::vector<Snake>()) {
+    std::stack<Snake> check_neighbors (Snake snk, std::vector<Coordinate> v = std::vector<Coordinate>()) {
+        std::cout << "Looking around " << snk.body[0] << "..." << std::endl;
+        
         std::stack<Snake> possib;
         Coordinate head = snk.body[0];
         Direction backwards;
@@ -53,7 +55,6 @@ class Player {
          * 3. Snake wouldn't bite itself
          * 4. Possible snake hasn't been tested yet
         */
-
         if (backwards != Direction::Up &&
             (level[head.row - 1][head.col] == ' ' || level[head.row - 1][head.col] == '*')) {
                 Snake hyp_snake = snk;
@@ -69,7 +70,7 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
                     possib.push(hyp_snake); 
         }
 
@@ -88,7 +89,7 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
                     possib.push(hyp_snake); 
         }
 
@@ -107,7 +108,7 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
                     possib.push(hyp_snake); 
         }
         
@@ -126,11 +127,44 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
                     possib.push(hyp_snake); 
         }
         
+        // Order possible moves so the ones that leads the snake closer to the target are tested first
+        std::vector<Snake> closer, further;
+
+        size_t i_count = possib.size();
+        for (size_t i = 0; i < i_count; i++) {
+            Snake e = possib.top();
+            
+            if (leads_closer(snk.body[0], e.body[0]))
+                closer.push_back(e);
+            else
+                further.push_back(e);
+
+            possib.pop();
+        }
+
+        for (Snake far : further)
+            possib.push(far);
+
+        for (Snake close : closer)
+            possib.push(close);
+
+        std::cout << "FOUND " << possib.size() << " POSSIBLE MOVES FROM " << snk.body[0] << "!" << std::endl;
+        
         return possib;
+    }
+
+    /// Checks if going to new_pos will lead the snaker closer to the target
+    bool leads_closer (Coordinate old_pos, Coordinate new_pos) {
+        int old_dis = target.row - old_pos.row + target.col - old_pos.col;
+        old_dis *= old_dis;
+        int new_dis = target.row - new_pos.row + target.col - new_pos.col;
+        old_dis *= old_dis;
+        
+        return new_dis < old_dis;
     }
 
     /// Looks for the best path to the fruit
@@ -145,6 +179,12 @@ class Player {
 
     /// Returns the next direction the snake should go
     Direction next_move();
+
+    /// Set a new target
+    void set_target (Coordinate tgt) { target = tgt; }
+
+    /// Set a new snake
+    void set_snake (Snake& snk) { snake = snk; }
 
     void print_state(std::stack<std::stack<Snake>> in);
 };

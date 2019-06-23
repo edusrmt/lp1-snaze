@@ -10,6 +10,7 @@ class Snake {
     std::deque<Coordinate> body;        //!< Storage of all body pieces from head to tail
     Direction facing = Direction::Up;   //!< Direction that the snake is looking to
     bool alive;                         //!< Is the snake alive?
+    bool grow = false;                  //!< Is the snake able to grow?
 
     /// Default constructor
     Snake () : alive{false} { }

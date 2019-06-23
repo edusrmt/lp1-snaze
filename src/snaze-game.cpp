@@ -59,6 +59,8 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
         levels.push_back(level);
     }
 
+    ai = new Player(levels[0].grid, levels[0].snake, levels[0].fruit);
+
     // Prints start message
     cout << " Levels loaded: " << levels.size() << " | Snake lives: 5 | Apples to eat: 10" << endl;
     cout << "     Clear all levels to win the game. Good luck!" << endl;
@@ -99,36 +101,55 @@ void SnazeGame::render () {
 void SnazeGame::update () {
     // Current levels is always at index 0
     Level& cur = levels[0];    
-
+    
     if(cur.fruit.row == -1 || cur.fruit.col == -1)
-        spawn_fruit();
+        spawn_fruit();    
 
     if (!cur.snake.alive)
         spawn_snake();
-    else {
+
+    if (round_complete()) {
+        score += cur.snake.body.size();
+        food++;
+        cur.snake.grow = true;
+        spawn_fruit();
+    } else {
         cur.snake.move(ai->next_move());
     }
 }
 
 void SnazeGame::wait () {
     this_thread::sleep_for(chrono::milliseconds((500)));
+    //cin.ignore();
 }
 
 void SnazeGame::spawn_snake () {
     Snake newSnake(levels[0].spawn);
     levels[0].snake = newSnake;
-    ai = new Player(levels[0].grid, levels[0].snake, levels[0].fruit);
+    ai->set_snake(levels[0].snake);
 }
 
 void SnazeGame::spawn_fruit () {    
     int f_row = rand() % levels[0].r, f_col = rand() % levels[0].c;
 
-    while(levels[0].grid[f_row][f_col] != ' ' && !levels[0].snake.is_at(Coordinate(f_row, f_col))) {
+    // While the target place is not a space or a star, or the snake is at it
+    while ((levels[0].grid[f_row][f_col] != ' ' && levels[0].grid[f_row][f_col] != '*')
+         || levels[0].snake.is_at(Coordinate(f_row, f_col))) {
+        cout << "Failed to spawn at " << Coordinate(f_row, f_col) << endl;
         f_row = rand() % levels[0].r;
         f_col = rand() % levels[0].c;
     }
-
+    cout << "Spawned new fruit at " << Coordinate(f_row, f_col) << endl;
     levels[0].fruit = Coordinate(f_row, f_col);    
+    ai->set_snake(levels[0].snake);
+    ai->set_target(levels[0].fruit);
+}
+
+bool SnazeGame::round_complete () {
+    if(levels[0].snake.body[0] == levels[0].fruit)
+        return true;
+    else
+        return false;
 }
 
 bool SnazeGame::level_complete () {

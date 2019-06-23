@@ -100,9 +100,9 @@ inline std::ostream& operator<< (std::ostream &out, const Level& lvl) {
             //out << "\u2588";
             //break;
 
-            case '0':
-            out << "\u2662";
-            break;
+            //case '0':
+            //out << "\u2662";
+            //break;
             
             default:
             out << display[i][j];  
