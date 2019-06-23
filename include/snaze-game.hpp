@@ -5,6 +5,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #include "../include/level.hpp"
 #include "../include/snake.hpp"
@@ -33,6 +35,9 @@ class SnazeGame {
 
     /// Runs all game logic
     void update ();
+
+    /// Wait some time
+    void wait ();
 
     /// Spawns a snake at spawn point, reference it's AI
     void spawn_snake ();

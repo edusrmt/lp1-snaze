@@ -110,6 +110,10 @@ void SnazeGame::update () {
     }
 }
 
+void SnazeGame::wait () {
+    this_thread::sleep_for(chrono::milliseconds((500)));
+}
+
 void SnazeGame::spawn_snake () {
     Snake newSnake(levels[0].spawn);
     levels[0].snake = newSnake;

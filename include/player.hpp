@@ -20,7 +20,6 @@ class Player {
 
     /// Returns a vector with all possible one step moves as Snapshots
     std::stack<Snake> check_neighbors (Snake snk, std::vector<Snake> v = std::vector<Snake>()) {
-        std::cout << "Wait, I'm looking around (" << snk.body[0].row << ", " << snk.body[0].col << ")" << std::endl;
         std::stack<Snake> possib;
         Coordinate head = snk.body[0];
         Direction backwards;
@@ -130,9 +129,7 @@ class Player {
                 if (!bite && std::find(v.begin(), v.end(), hyp_snake) == v.end())
                     possib.push(hyp_snake); 
         }
-
-
-        std::cout << "I can go in " << possib.size() << " directions!" << std::endl;
+        
         return possib;
     }
 
@@ -148,6 +145,8 @@ class Player {
 
     /// Returns the next direction the snake should go
     Direction next_move();
+
+    void print_state(std::stack<std::stack<Snake>> in);
 };
 
 #endif
