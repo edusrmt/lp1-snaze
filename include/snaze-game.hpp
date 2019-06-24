@@ -45,8 +45,11 @@ class SnazeGame {
     /// Runs all game logic
     void update ();
 
-    /// Wait some time
+    /// Wait some time or user input
     void wait ();
+
+    /// Render final screen
+    void end_game();
 
     /// Spawns a snake at spawn point, reference it's AI
     void spawn_snake ();

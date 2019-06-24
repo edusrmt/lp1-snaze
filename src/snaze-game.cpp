@@ -79,6 +79,9 @@ bool SnazeGame::game_over () {
 }
 
 void SnazeGame::render () {
+    if (paused)
+        return;
+
     // Can't render a level that doesn't exist
     if (levels.size() == 0) {
         cout << "GAME OVER" << endl;
@@ -114,10 +117,10 @@ void SnazeGame::render () {
 
 void SnazeGame::update () {
     // Current levels is always at index 0
-    Level& cur = levels[0];    
-    
-    bool begin = cur.fruit.row == -1 || cur.fruit.col == -1;
+    Level& cur = levels[0];   
+
     // At the beginning of the level, spawn a fruit and a snake
+    bool begin = cur.fruit.row == -1 || cur.fruit.col == -1;
     if(begin) {
         spawn_fruit(); 
         spawn_snake(); 
@@ -153,6 +156,7 @@ void SnazeGame::update () {
     // Won the level
     if (food == 10) {
         msg = ">>> Completed level " + to_string(level_amt - levels.size() + 1) + " (of " + to_string(level_amt) + ") successfully!";
+        render();
         levels.pop_front();
         food = 0;
 
@@ -186,8 +190,22 @@ void SnazeGame::spawn_fruit () {
         f_row = rand() % levels[0].r;
         f_col = rand() % levels[0].c;
     }
-    cout << "Spawned new fruit at " << Coordinate(f_row, f_col) << endl;
+    
     levels[0].fruit = Coordinate(f_row, f_col);    
     ai->set_snake(levels[0].snake);
     ai->set_target(levels[0].fruit);
+}
+
+void SnazeGame::end_game () {
+    if (lives > 0) {
+        cout << "+--------------------------------------+" << endl;
+        cout << "|  CONGRATULATIONS, you won the game!  |" << endl;  
+        cout << "|         Thanks for playing!          |" << endl;
+        cout << "+--------------------------------------+" << endl;
+    } else {
+        cout << "+--------------------------------+" << endl;
+        cout << "|  SORRY, you couldn't make it!  |" << endl;  
+        cout << "|           Try again!           |" << endl;
+        cout << "+--------------------------------+" << endl;
+    }
 }

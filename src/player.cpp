@@ -21,7 +21,6 @@ void Player::print_state(std::stack<std::stack<Snake>> in) {
 
 bool Player::find_solution () {
     clear_path();
-    cout << "find_solution() " << endl;
     stack<stack<Snake>> possible;       // Stack of stack of possible snakes
     vector<Coordinate> tested;          // Vector of all rejected snakes
 

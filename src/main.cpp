@@ -14,5 +14,7 @@ int main (int argc, char* argv[]) {
         game.render();
     }
 
+    game.end_game();
+
     return 0;
 }
