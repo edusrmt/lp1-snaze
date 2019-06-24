@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <deque>
 #include <chrono>
 #include <thread>
 
@@ -14,7 +15,7 @@
 
 class SnazeGame {
     private:
-    std::vector<Level> levels;      //!< Vector that stores all levels
+    std::deque<Level> levels;       //!< Deque that stores all levels
     int lives = 5;                  //!< Amount of lives the snake has
     int score = 0;                  //!< Current score of the game
     int food = 0;                   //!< Amount of food eaten in the current level

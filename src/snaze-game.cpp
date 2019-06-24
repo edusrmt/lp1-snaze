@@ -108,19 +108,23 @@ void SnazeGame::update () {
     if (!cur.snake.alive)
         spawn_snake();
 
-    if (round_complete()) {
-        score += cur.snake.body.size();
-        food++;
-        cur.snake.grow = true;
-        spawn_fruit();
+    if (level_complete()) {
+        levels.pop_front();
     } else {
-        cur.snake.move(ai->next_move());
-    }
+        if (round_complete()) {
+            score += cur.snake.body.size();
+            food++;
+            cur.snake.grow = true;
+            spawn_fruit();
+        } else {
+            cur.snake.move(ai->next_move());
+        }
+    }    
 }
 
 void SnazeGame::wait () {
-    this_thread::sleep_for(chrono::milliseconds((500)));
-    //cin.ignore();
+    //this_thread::sleep_for(chrono::milliseconds((500)));
+    cin.ignore();
 }
 
 void SnazeGame::spawn_snake () {
@@ -146,12 +150,9 @@ void SnazeGame::spawn_fruit () {
 }
 
 bool SnazeGame::round_complete () {
-    if(levels[0].snake.body[0] == levels[0].fruit)
-        return true;
-    else
-        return false;
+    return levels[0].snake.body[0] == levels[0].fruit;
 }
 
 bool SnazeGame::level_complete () {
-    return false;
+    return food == 10 || lives == 0;
 }

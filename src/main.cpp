@@ -8,7 +8,7 @@ int main (int argc, char* argv[]) {
     if(!game.initialize_game(argc, argv))
         return 1;
 
-    for (int i = 0; i < 30; i++) {      
+    while (not game.game_over()) {      
         game.wait();
         game.update();
         game.render();

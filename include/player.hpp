@@ -24,39 +24,15 @@ class Player {
         
         std::stack<Snake> possib;
         Coordinate head = snk.body[0];
-        Direction backwards;
 
-        // We don't want moving backwards to be a possible move
-        switch (snk.facing) {
-            case Direction::Up:
-            backwards = Direction::Down;
-            break;
-
-            case Direction::Right:
-            backwards = Direction::Left;
-            break;
-
-            case Direction::Down:
-            backwards = Direction::Up;
-            break;
-
-            case Direction::Left:
-            backwards = Direction::Right;
-            break;
-        
-            default:
-            break;
-        }
 
         /** Check all possible one step moves in two steps, i.e., find wich possibilities satisfy:
-         * 1. Direction is not backwards 
-         * 2. Next position isn't a wall
+         * 1. Next position isn't a wall
          * Simulates snake after moving
-         * 3. Snake wouldn't bite itself
-         * 4. Possible snake hasn't been tested yet
+         * 2. Snake wouldn't bite itself
+         * 3. Possible snake hasn't been tested yet
         */
-        if (backwards != Direction::Up &&
-            (level[head.row - 1][head.col] == ' ' || level[head.row - 1][head.col] == '*')) {
+        if ((level[head.row - 1][head.col] == ' ' || level[head.row - 1][head.col] == '*')) {
                 Snake hyp_snake = snk;
                 hyp_snake.move(Direction::Up);
 
@@ -74,8 +50,7 @@ class Player {
                     possib.push(hyp_snake); 
         }
 
-        if (backwards != Direction::Right &&
-            (level[head.row][head.col + 1] == ' ' || level[head.row][head.col + 1] == '*')) {
+        if ((level[head.row][head.col + 1] == ' ' || level[head.row][head.col + 1] == '*')) {
                 Snake hyp_snake = snk;
                 hyp_snake.move(Direction::Right);
 
@@ -93,8 +68,7 @@ class Player {
                     possib.push(hyp_snake); 
         }
 
-        if (backwards != Direction::Down &&
-            (level[head.row + 1][head.col] == ' ' || level[head.row + 1][head.col] == '*')) {
+        if ((level[head.row + 1][head.col] == ' ' || level[head.row + 1][head.col] == '*')) {
                 Snake hyp_snake = snk;
                 hyp_snake.move(Direction::Down);
 
@@ -112,8 +86,7 @@ class Player {
                     possib.push(hyp_snake); 
         }
         
-        if (backwards != Direction::Left &&
-            (level[head.row][head.col - 1] == ' ' || level[head.row][head.col - 1] == '*')) {
+        if ((level[head.row][head.col - 1] == ' ' || level[head.row][head.col - 1] == '*')) {
                 Snake hyp_snake = snk;
                 hyp_snake.move(Direction::Left);
 
@@ -138,6 +111,7 @@ class Player {
         for (size_t i = 0; i < i_count; i++) {
             Snake e = possib.top();
             
+            std::cout << "GOING " << e.facing << " IS " << leads_closer(snk.body[0], e.body[0]) << std::endl;
             if (leads_closer(snk.body[0], e.body[0]))
                 closer.push_back(e);
             else
@@ -162,8 +136,8 @@ class Player {
         int old_dis = target.row - old_pos.row + target.col - old_pos.col;
         old_dis *= old_dis;
         int new_dis = target.row - new_pos.row + target.col - new_pos.col;
-        old_dis *= old_dis;
-        
+        new_dis *= new_dis;
+
         return new_dis < old_dis;
     }
 

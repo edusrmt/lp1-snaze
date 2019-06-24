@@ -31,35 +31,43 @@ bool Player::find_solution () {
     if (init.size() != 0) {
         cout << "HERE WE GO!" << endl;
         possible.push(init);
-        stack<Snake> cur_stack = possible.top();
-        Snake cur_snake = cur_stack.top();
+        stack<Snake> *cur_stack = &possible.top();
+        Snake cur_snake = cur_stack->top();
 
         // Repeat until the path is found or ran out of possibilities
         while (cur_snake.body[0] != target && !possible.empty()) {
             // Gets all possible moves from current position
             stack<Snake> neighs = check_neighbors(cur_snake, tested);
 
-            tested.push_back(cur_stack.top().body[0]);
+            tested.push_back(cur_stack->top().body[0]);
 
             if (neighs.size() == 0) {
-                // If we reach a dead end, try another possibility in this stack                
-                cur_stack.pop();
+                // If we reach a dead end, try another possibility in this stack     
+                print_state(possible);
 
+                cout << cur_stack->top().body[0] << " -> ";
+                cur_stack->pop();
+                if(cur_stack->size() > 0)
+                    cout << cur_stack->top().body[0] << endl;
+                else
+                    cout << "NULL" << endl;
+                
+                print_state(possible);
                 // If there is no possibility in this stack, go to previous stack
-                if (cur_stack.size() == 0) {
+                if (cur_stack->size() == 0) {                    
                     possible.pop();                 // Removes stack
-                    cur_stack = possible.top();     // Updates current stack
-                    cur_snake = cur_stack.top();    // Updates current snake
+                    cur_stack = &(possible.top());     // Updates current stack
                 }
 
-                cur_snake = cur_stack.top();        // Updates current snake
+                cur_snake = cur_stack->top();        // Updates current snake
+                cout << "Should go back to " << cur_snake.body[0] << endl;
             } else {
                 // Adds new stack to possibilities
                 possible.push(neighs);
 
                 // Update current tests
-                cur_stack = possible.top();
-                cur_snake = cur_stack.top();
+                cur_stack = &(possible.top());
+                cur_snake = cur_stack->top();
             }
         }
 
