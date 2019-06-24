@@ -21,7 +21,7 @@ void Player::print_state(std::stack<std::stack<Snake>> in) {
 
 bool Player::find_solution () {
     stack<stack<Snake>> possible;       // Stack of stack of possible snakes
-    vector<Coordinate> tested;               // Vector of all rejected snakes
+    vector<Coordinate> tested;          // Vector of all rejected snakes
 
     // Starts with current possibility
     stack<Snake> init = check_neighbors(snake, tested); 
@@ -41,15 +41,17 @@ bool Player::find_solution () {
 
             if (neighs.size() == 0) {
                 // If we reach a dead end, try another possibility in this stack  
-                cur_stack->pop();     
-
+                cur_stack->pop();                 
+            
                 // If there is no possibility in this stack, go to previous stack
-                if (cur_stack->size() == 0) {                    
-                    possible.pop();                 // Removes stack
-                    cur_stack = &(possible.top());     // Updates current stack
-                }
+                if (cur_stack->empty())                 
+                    possible.pop();                     // Removes stack
 
-                cur_snake = cur_stack->top();        // Updates current snake
+                // If there is any possibility left to test
+                if (!possible.empty()) {
+                    cur_stack = &(possible.top());      // Updates current stack                
+                    cur_snake = cur_stack->top();       // Updates current snake
+                }                             
             } else {
                 // Adds new stack to possibilities
                 possible.push(neighs);

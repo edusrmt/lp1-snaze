@@ -55,8 +55,9 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
             }
         }
 
-        // Stores level into the vector
-        levels.push_back(level);
+        // Stores level into the vector, if it has a spawn point
+        if(level.spawn != Coordinate())
+            levels.push_back(level);
     }
 
     ai = new Player(levels[0].grid, levels[0].snake, levels[0].fruit);
@@ -74,7 +75,7 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
 }
 
 bool SnazeGame::game_over () {
-    return levels.size() == 0;
+    return levels.size() == 0 || lives == 0;
 }
 
 void SnazeGame::render () {
@@ -115,25 +116,37 @@ void SnazeGame::update () {
     // Current levels is always at index 0
     Level& cur = levels[0];    
     
-    // If there is no fruit on the level, spawn one
-    if(cur.fruit.row == -1 || cur.fruit.col == -1)
-        spawn_fruit();    
+    // At the beginning of the level, spawn a fruit and a snake
+    if(cur.fruit.row == -1 || cur.fruit.col == -1) {
+        spawn_fruit(); 
+        spawn_snake();   
+    }   
 
-    // If the snake is dead, spawn a new one
-    if (!cur.snake.alive)
+    if (!cur.snake.alive && !paused)
         spawn_snake();
 
-    // Has the snake eaten the fruit or died?
-    if (round_complete()) {
+    // Ate the fruit
+    if (levels[0].snake.body[0] == levels[0].fruit) {
         score += cur.snake.body.size();
         food++;
         cur.snake.grow = true;
         spawn_fruit();
-    } else {
-        cur.snake.move(ai->next_move());
-    }
+    } 
 
-    if (level_complete()) {
+    Snake last_snake = cur.snake;
+    cur.snake.move(ai->next_move());
+
+    // If the snakes crashes after moving
+    if (cur.grid[cur.snake.body[0].row][cur.snake.body[0].col] == '#') {
+        msg = "Oh no! Anaconda crashed while trying to go to the fruit!";
+        cur.snake = last_snake;
+        cur.snake.alive = false;
+        paused = true;
+        lives--;            
+    }
+    
+    // Won the level
+    if (food == 10) {
         msg = ">>> Completed level " + to_string(level_amt - levels.size() + 1) + " (of " + to_string(level_amt) + ") successfully!";
         levels.pop_front();
         food = 0;
@@ -154,10 +167,9 @@ void SnazeGame::wait () {
     }
 }
 
-void SnazeGame::spawn_snake () {
-    Snake newSnake(levels[0].spawn);
-    levels[0].snake = newSnake;
-    ai->set_snake(levels[0].snake);
+void SnazeGame::spawn_snake () {     
+        levels[0].snake = Snake(levels[0].spawn);
+        ai->set_snake(levels[0].snake);    
 }
 
 void SnazeGame::spawn_fruit () {    
@@ -173,13 +185,4 @@ void SnazeGame::spawn_fruit () {
     levels[0].fruit = Coordinate(f_row, f_col);    
     ai->set_snake(levels[0].snake);
     ai->set_target(levels[0].fruit);
-}
-
-bool SnazeGame::round_complete () {
-    Coordinate head = levels[0].snake.body[0];
-    return head == levels[0].fruit || levels[0].grid[head.row][head.col] == '#';
-}
-
-bool SnazeGame::level_complete () {
-    return food == 10 || lives == 0;
 }

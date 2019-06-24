@@ -57,11 +57,13 @@ inline std::ostream& operator<< (std::ostream &out, const Level& lvl) {
     if (lvl.fruit.row != -1 && lvl.fruit.col != -1)
         display[lvl.fruit.row][lvl.fruit.col] = 'o';
 
+    /// Draws spawn point only before starting the level
+    if (lvl.snake.alive || lvl.fruit.row != -1 || lvl.fruit.col != -1)
+        display[lvl.spawn.row][lvl.spawn.col] = ' ';        
+
+
     /// Draws snake on the display, starting by the head
     if (lvl.snake.alive) {
-        /// If snake is alive, spawn point is not rendered
-        display[lvl.spawn.row][lvl.spawn.col] = ' ';
-
         Coordinate head = lvl.snake.body[0];
         char head_char = ' ';
 
@@ -89,7 +91,15 @@ inline std::ostream& operator<< (std::ostream &out, const Level& lvl) {
         for (size_t i = 1; i < lvl.snake.body.size(); i++) {
             display[lvl.snake.body[i].row][lvl.snake.body[i].col] = '0';
         }
+    } else {
+        if (lvl.fruit.row != -1 || lvl.fruit.col != -1)
+            display[lvl.snake.body[0].row][lvl.snake.body[0].col] = 'X';
+
+        for (size_t i = 1; i < lvl.snake.body.size(); i++) {
+            display[lvl.snake.body[i].row][lvl.snake.body[i].col] = 'x';
+        }
     }
+    
 
     /// Sends final display to output, applying unicode style
     for (int i = 0; i < lvl.r; i++) {
@@ -106,6 +116,14 @@ inline std::ostream& operator<< (std::ostream &out, const Level& lvl) {
 
                 case '0':
                 out << "\uFFEE";
+                break;
+
+                case 'X':
+                out << "\uFFED";
+                break;
+
+                case 'x':
+                out << "\u2B1D";
                 break;
             
                 default:
