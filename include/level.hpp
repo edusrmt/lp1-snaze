@@ -96,17 +96,21 @@ inline std::ostream& operator<< (std::ostream &out, const Level& lvl) {
         for (int j = 0; j < lvl.c; j++) {
             switch (display[i][j])
             {
-            //case '#':
-            //out << "\u2588";
-            //break;
+                case '.':
+                out << ' ';
+                break;
 
-            //case '0':
-            //out << "\u2662";
-            //break;
+                case '#':
+                out << "\u2588";
+                break;
+
+                case '0':
+                out << "\uFFEE";
+                break;
             
-            default:
-            out << display[i][j];  
-            break;
+                default:
+                out << display[i][j];  
+                break;
             }
         }
         

@@ -16,10 +16,13 @@
 class SnazeGame {
     private:
     std::deque<Level> levels;       //!< Deque that stores all levels
+    bool paused = false;            //!< Should wait for user input?
+    int level_amt;                  //!< Amount of levels loaded
     int lives = 5;                  //!< Amount of lives the snake has
     int score = 0;                  //!< Current score of the game
     int food = 0;                   //!< Amount of food eaten in the current level
-    Player* ai;
+    std::string msg = "";           //!< Message to be displayed on the top of the screen
+    Player* ai;                     //!< Snake's AI
 
     public:
     /// Default constructor

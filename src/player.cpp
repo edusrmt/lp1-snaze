@@ -20,7 +20,6 @@ void Player::print_state(std::stack<std::stack<Snake>> in) {
 }
 
 bool Player::find_solution () {
-    std::cout << "TRYING TO FIND BEST PATH FROM " << snake.body[0] << " to " << target << std::endl;
     stack<stack<Snake>> possible;       // Stack of stack of possible snakes
     vector<Coordinate> tested;               // Vector of all rejected snakes
 
@@ -29,7 +28,6 @@ bool Player::find_solution () {
 
     // If we don't start with a dead end, try to find a path
     if (init.size() != 0) {
-        cout << "HERE WE GO!" << endl;
         possible.push(init);
         stack<Snake> *cur_stack = &possible.top();
         Snake cur_snake = cur_stack->top();
@@ -42,17 +40,9 @@ bool Player::find_solution () {
             tested.push_back(cur_stack->top().body[0]);
 
             if (neighs.size() == 0) {
-                // If we reach a dead end, try another possibility in this stack     
-                print_state(possible);
+                // If we reach a dead end, try another possibility in this stack  
+                cur_stack->pop();     
 
-                cout << cur_stack->top().body[0] << " -> ";
-                cur_stack->pop();
-                if(cur_stack->size() > 0)
-                    cout << cur_stack->top().body[0] << endl;
-                else
-                    cout << "NULL" << endl;
-                
-                print_state(possible);
                 // If there is no possibility in this stack, go to previous stack
                 if (cur_stack->size() == 0) {                    
                     possible.pop();                 // Removes stack
@@ -60,7 +50,6 @@ bool Player::find_solution () {
                 }
 
                 cur_snake = cur_stack->top();        // Updates current snake
-                cout << "Should go back to " << cur_snake.body[0] << endl;
             } else {
                 // Adds new stack to possibilities
                 possible.push(neighs);
@@ -71,8 +60,6 @@ bool Player::find_solution () {
             }
         }
 
-        print_state(possible);
-
         // If we've found a path to the fruit, save it
         if (cur_snake.body[0] == target) {
             size_t i_count = possible.size();
@@ -82,7 +69,7 @@ bool Player::find_solution () {
                 possible.pop();
             }
             
-            // PRINT PATH
+            /* PRINT PATH
             cout << "PATH:" << endl;
             stack<Direction> spy = path;
             i_count = path.size();
@@ -93,7 +80,7 @@ bool Player::find_solution () {
             }
 
             cout << endl;
-
+            */
 
             return true;
         }

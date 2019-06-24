@@ -60,14 +60,15 @@ bool SnazeGame::initialize_game (int argc, char* argv[]) {
     }
 
     ai = new Player(levels[0].grid, levels[0].snake, levels[0].fruit);
+    level_amt = levels.size();
 
     // Prints start message
-    cout << " Levels loaded: " << levels.size() << " | Snake lives: 5 | Apples to eat: 10" << endl;
+    cout << " Levels loaded: " << level_amt << " | Snake lives: 5 | Apples to eat: 10" << endl;
     cout << "     Clear all levels to win the game. Good luck!" << endl;
     cout << "-------------------------------------------------------" << endl;
     cout << ">>> Press <ENTER> to start the game!" << endl;
     render();
-
+    paused = true;
     input.close();
     return true;
 }
@@ -77,9 +78,21 @@ bool SnazeGame::game_over () {
 }
 
 void SnazeGame::render () {
+    // Can't render a level that doesn't exist
+    if (levels.size() == 0) {
+        cout << "GAME OVER" << endl;
+        return;
+    }
+
     // Prints header
-    string msg;
     cout << msg << endl;
+
+    if (msg != "") {
+        msg = "";
+        cout << ">>> Press <ENTER> to continue!" << endl;
+        paused = true;
+    }
+
     cout << "Lives: ";
 
     // Prints lives display
@@ -102,29 +115,43 @@ void SnazeGame::update () {
     // Current levels is always at index 0
     Level& cur = levels[0];    
     
+    // If there is no fruit on the level, spawn one
     if(cur.fruit.row == -1 || cur.fruit.col == -1)
         spawn_fruit();    
 
+    // If the snake is dead, spawn a new one
     if (!cur.snake.alive)
         spawn_snake();
 
-    if (level_complete()) {
-        levels.pop_front();
+    // Has the snake eaten the fruit or died?
+    if (round_complete()) {
+        score += cur.snake.body.size();
+        food++;
+        cur.snake.grow = true;
+        spawn_fruit();
     } else {
-        if (round_complete()) {
-            score += cur.snake.body.size();
-            food++;
-            cur.snake.grow = true;
-            spawn_fruit();
-        } else {
-            cur.snake.move(ai->next_move());
-        }
-    }    
+        cur.snake.move(ai->next_move());
+    }
+
+    if (level_complete()) {
+        msg = ">>> Completed level " + to_string(level_amt - levels.size() + 1) + " (of " + to_string(level_amt) + ") successfully!";
+        levels.pop_front();
+        food = 0;
+
+        if(levels.size() > 0)
+            ai->set_level(levels[0].grid);
+
+        paused = true;
+    }
 }
 
 void SnazeGame::wait () {
-    //this_thread::sleep_for(chrono::milliseconds((500)));
-    cin.ignore();
+    if (paused) {
+        cin.ignore();
+        paused = false;
+    } else {
+        this_thread::sleep_for(chrono::milliseconds((100)));
+    }
 }
 
 void SnazeGame::spawn_snake () {
@@ -139,7 +166,6 @@ void SnazeGame::spawn_fruit () {
     // While the target place is not a space or a star, or the snake is at it
     while ((levels[0].grid[f_row][f_col] != ' ' && levels[0].grid[f_row][f_col] != '*')
          || levels[0].snake.is_at(Coordinate(f_row, f_col))) {
-        cout << "Failed to spawn at " << Coordinate(f_row, f_col) << endl;
         f_row = rand() % levels[0].r;
         f_col = rand() % levels[0].c;
     }
@@ -150,7 +176,8 @@ void SnazeGame::spawn_fruit () {
 }
 
 bool SnazeGame::round_complete () {
-    return levels[0].snake.body[0] == levels[0].fruit;
+    Coordinate head = levels[0].snake.body[0];
+    return head == levels[0].fruit || levels[0].grid[head.row][head.col] == '#';
 }
 
 bool SnazeGame::level_complete () {

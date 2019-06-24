@@ -20,8 +20,6 @@ class Player {
 
     /// Returns a vector with all possible one step moves as Snapshots
     std::stack<Snake> check_neighbors (Snake snk, std::vector<Coordinate> v = std::vector<Coordinate>()) {
-        std::cout << "Looking around " << snk.body[0] << "..." << std::endl;
-        
         std::stack<Snake> possib;
         Coordinate head = snk.body[0];
 
@@ -110,8 +108,6 @@ class Player {
         size_t i_count = possib.size();
         for (size_t i = 0; i < i_count; i++) {
             Snake e = possib.top();
-            
-            std::cout << "GOING " << e.facing << " IS " << leads_closer(snk.body[0], e.body[0]) << std::endl;
             if (leads_closer(snk.body[0], e.body[0]))
                 closer.push_back(e);
             else
@@ -125,8 +121,6 @@ class Player {
 
         for (Snake close : closer)
             possib.push(close);
-
-        std::cout << "FOUND " << possib.size() << " POSSIBLE MOVES FROM " << snk.body[0] << "!" << std::endl;
         
         return possib;
     }
@@ -159,6 +153,9 @@ class Player {
 
     /// Set a new snake
     void set_snake (Snake& snk) { snake = snk; }
+
+    /// Set a new level grid
+    void set_level (std::vector<std::vector<char>> lvl) { level = lvl; }
 
     void print_state(std::stack<std::stack<Snake>> in);
 };
