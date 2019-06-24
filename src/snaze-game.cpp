@@ -116,10 +116,11 @@ void SnazeGame::update () {
     // Current levels is always at index 0
     Level& cur = levels[0];    
     
+    bool begin = cur.fruit.row == -1 || cur.fruit.col == -1;
     // At the beginning of the level, spawn a fruit and a snake
-    if(cur.fruit.row == -1 || cur.fruit.col == -1) {
+    if(begin) {
         spawn_fruit(); 
-        spawn_snake();   
+        spawn_snake(); 
     }   
 
     if (!cur.snake.alive && !paused)
@@ -130,19 +131,23 @@ void SnazeGame::update () {
         score += cur.snake.body.size();
         food++;
         cur.snake.grow = true;
-        spawn_fruit();
-    } 
 
-    Snake last_snake = cur.snake;
-    cur.snake.move(ai->next_move());
+        if (food < 10)
+            spawn_fruit();
+    }
 
-    // If the snakes crashes after moving
-    if (cur.grid[cur.snake.body[0].row][cur.snake.body[0].col] == '#') {
-        msg = "Oh no! Anaconda crashed while trying to go to the fruit!";
-        cur.snake = last_snake;
-        cur.snake.alive = false;
-        paused = true;
-        lives--;            
+    if(!begin && food < 10) {
+        Snake last_snake = cur.snake;
+        cur.snake.move(ai->next_move());
+
+        // If the snakes crashes after moving
+        if (cur.grid[cur.snake.body[0].row][cur.snake.body[0].col] == '#') {
+            msg = "Oh no! Anaconda crashed while trying to go to the fruit!";
+            cur.snake = last_snake;
+            cur.snake.alive = false;
+            paused = true;
+            lives--;            
+        }
     }
     
     // Won the level

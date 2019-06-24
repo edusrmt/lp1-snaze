@@ -20,6 +20,8 @@ void Player::print_state(std::stack<std::stack<Snake>> in) {
 }
 
 bool Player::find_solution () {
+    clear_path();
+    cout << "find_solution() " << endl;
     stack<stack<Snake>> possible;       // Stack of stack of possible snakes
     vector<Coordinate> tested;          // Vector of all rejected snakes
 
@@ -34,6 +36,7 @@ bool Player::find_solution () {
 
         // Repeat until the path is found or ran out of possibilities
         while (cur_snake.body[0] != target && !possible.empty()) {
+            //print_state(possible);
             // Gets all possible moves from current position
             stack<Snake> neighs = check_neighbors(cur_snake, tested);
 
@@ -81,8 +84,8 @@ bool Player::find_solution () {
                 spy.pop();
             }
 
-            cout << endl;
-            */
+            cout << endl;*/
+            
 
             return true;
         }

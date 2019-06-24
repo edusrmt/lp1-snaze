@@ -18,6 +18,12 @@ class Player {
 
     std::stack<Direction> path;             //!< Path to the fruit
 
+    void clear_path () {
+        while(!path.empty()) {
+            path.pop();
+        }
+    }
+
     /// Returns a vector with all possible one step moves as Snapshots
     std::stack<Snake> check_neighbors (Snake snk, std::vector<Coordinate> v = std::vector<Coordinate>()) {
         std::stack<Snake> possib;
@@ -30,6 +36,9 @@ class Player {
          * 2. Snake wouldn't bite itself
          * 3. Possible snake hasn't been tested yet
         */
+       //std::cout << "UP BLOCK: " << level[head.row - 1][head.col] << std::endl;
+
+       //std::cout << "[ ";
         if ((level[head.row - 1][head.col] == ' ' || level[head.row - 1][head.col] == '*')) {
                 Snake hyp_snake = snk;
                 hyp_snake.move(Direction::Up);
@@ -44,8 +53,10 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end()) {
                     possib.push(hyp_snake); 
+                    //std::cout << hyp_snake.body[0] << " ";
+                }
         }
 
         if ((level[head.row][head.col + 1] == ' ' || level[head.row][head.col + 1] == '*')) {
@@ -62,8 +73,10 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end()){
                     possib.push(hyp_snake); 
+                    //std::cout << hyp_snake.body[0] << " ";
+                }
         }
 
         if ((level[head.row + 1][head.col] == ' ' || level[head.row + 1][head.col] == '*')) {
@@ -80,8 +93,10 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end()){
                     possib.push(hyp_snake); 
+                    //std::cout << hyp_snake.body[0] << " ";
+                }
         }
         
         if ((level[head.row][head.col - 1] == ' ' || level[head.row][head.col - 1] == '*')) {
@@ -98,10 +113,13 @@ class Player {
                 }
 
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
-                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end())
+                if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end()) {
                     possib.push(hyp_snake); 
+
+                    //std::cout << hyp_snake.body[0] << " ";
+                }
         }
-        
+        //std::cout << "]" << std::endl;
         // Order possible moves so the ones that leads the snake closer to the target are tested first
         std::vector<Snake> closer, further;
 
@@ -122,6 +140,8 @@ class Player {
         for (Snake close : closer)
             possib.push(close);
         
+        //std::cout << possib.size() << " possible moves from " << snk.body[0] << "!" << std::endl;
+
         return possib;
     }
 
@@ -149,13 +169,22 @@ class Player {
     Direction next_move();
 
     /// Set a new target
-    void set_target (Coordinate tgt) { target = tgt; }
+    void set_target (Coordinate tgt) { 
+        clear_path();
+        target = tgt; 
+    }
 
     /// Set a new snake
-    void set_snake (Snake& snk) { snake = snk; }
+    void set_snake (Snake& snk) {
+        clear_path();
+        snake = snk; 
+    }
 
     /// Set a new level grid
-    void set_level (std::vector<std::vector<char>> lvl) { level = lvl; }
+    void set_level (std::vector<std::vector<char>> lvl) { 
+        clear_path();
+        level = lvl; 
+    }
 
     void print_state(std::stack<std::stack<Snake>> in);
 };
