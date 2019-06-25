@@ -46,6 +46,7 @@ class Level {
 
         grid[row][col] = value;
     }
+
 };
 
 /// Output operator

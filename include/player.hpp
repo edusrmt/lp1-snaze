@@ -75,7 +75,6 @@ class Player {
                 // If it didn't bite and this hypothetical snake hasn't been tested yet
                 if (!bite && std::find(v.begin(), v.end(), hyp_snake.body[0]) == v.end()){
                     possib.push(hyp_snake); 
-                    //std::cout << hyp_snake.body[0] << " ";
                 }
         }
 

@@ -11,6 +11,7 @@ bool Snake::is_at (Coordinate pos) {
 }
 
 void Snake::move (Direction dir) {
+    
     facing = dir;
 
     // If it will grow, don't remove the tail

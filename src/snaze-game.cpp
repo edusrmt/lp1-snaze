@@ -128,17 +128,8 @@ void SnazeGame::update () {
 
     if (!cur.snake.alive && !paused)
         spawn_snake();
-
-    // Ate the fruit
-    if (levels[0].snake.body[0] == levels[0].fruit) {
-        score += cur.snake.body.size();
-        food++;
-        cur.snake.grow = true;
-
-        if (food < 10)
-            spawn_fruit();
-    }
-
+    
+    // Move the snake
     if(!begin && food < 10) {
         Snake last_snake = cur.snake;
         cur.snake.move(ai->next_move());
@@ -148,9 +139,20 @@ void SnazeGame::update () {
             msg = "Oh no! Anaconda crashed while trying to go to the fruit!";
             cur.snake = last_snake;
             cur.snake.alive = false;
-            paused = true;
-            lives--;            
+            render();
+            lives--;    
+            paused = true;                    
         }
+    }
+    
+    // Ate the fruit
+    if (levels[0].snake.body[0] == levels[0].fruit) {
+        score += cur.snake.body.size();
+        food++;
+        cur.snake.grow = true;
+        
+        if (food < 10)
+            spawn_fruit();        
     }
     
     // Won the level
@@ -186,11 +188,11 @@ void SnazeGame::spawn_fruit () {
 
     // While the target place is not a space or a star, or the snake is at it
     while ((levels[0].grid[f_row][f_col] != ' ' && levels[0].grid[f_row][f_col] != '*')
-         || levels[0].snake.is_at(Coordinate(f_row, f_col))) {
+         || levels[0].snake.is_at(Coordinate(f_row, f_col))) {          
         f_row = rand() % levels[0].r;
         f_col = rand() % levels[0].c;
     }
-    
+      
     levels[0].fruit = Coordinate(f_row, f_col);    
     ai->set_snake(levels[0].snake);
     ai->set_target(levels[0].fruit);

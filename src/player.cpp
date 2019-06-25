@@ -100,11 +100,13 @@ Direction Player::next_move () {
         next = path.top();
         path.pop();
     } else {
+        
         // If there is no path to be followed, go to a possible step
         stack<Snake> neighs = check_neighbors(snake);
 
-        if(neighs.size() > 0)
+        if(neighs.size() > 0) {
             next = neighs.top().facing;
+        }        
     }
 
     return next;
