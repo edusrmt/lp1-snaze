@@ -5,8 +5,8 @@
 
 struct Coordinate
 {
-    int row;
-    int col;
+    int row;    //!< Row index
+    int col;    //!< Column index
 
     /// Default constructor
     Coordinate () : row{-1}, col{-1} { }
@@ -28,11 +28,13 @@ struct Coordinate
     friend std::ostream& operator<< (std::ostream &out, const Coordinate& cood);
 };
 
+/// Output operator
 inline std::ostream& operator<< (std::ostream &out, const Coordinate& cood) {
     out << "(" << cood.row << ", " << cood.col << ")";
     return out;
 }
 
+/// Absolute directions
 enum Direction {
     Up,
     Right,
